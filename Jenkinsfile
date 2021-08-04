@@ -15,7 +15,7 @@ pipeline {
             }
         }
         
-        stage('Deploy') { 
+        stage('Maven Build') { 
             steps {
                 sh "mvn package"
             }
@@ -25,7 +25,7 @@ pipeline {
         stage('Build Docker image'){
             steps {
               
-                sh 'docker build -t  9246115521/docker_jenkins_springboot:${BUILD_NUMBER} .'
+                sh 'docker build -t  navneetdhar/docker_jenkins_springboot:${BUILD_NUMBER} .'
             }
         }
 
@@ -33,21 +33,21 @@ pipeline {
             
             steps {
                  withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]) {
-                    sh "docker login -u 9246115521 -p ${Dockerpwd}"
+                    sh "docker login -u navneetdhar -p ${Dockerpwd}"
                 }
             }                
         }
 
         stage('Docker Push'){
             steps {
-                sh 'docker push 9246115521/docker_jenkins_springboot:${BUILD_NUMBER}'
+                sh 'docker push navneetdhar/docker_jenkins_springboot:${BUILD_NUMBER}'
             }
         }
         
         stage('Docker deploy'){
             steps {
                
-                sh 'docker run -itd -p  8081:8090 9246115521/docker_jenkins_springboot:${BUILD_NUMBER}'
+                sh 'docker run -itd -p  8081:8090 navneetdhar/docker_jenkins_springboot:${BUILD_NUMBER}'
             }
         }
 
